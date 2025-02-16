@@ -5,7 +5,7 @@ export const getTodos = async () => {
   return res.json();
 };
 
-export const addTodo = async (todo: Todo) => {
+export const addTodo = async (todo: Partial<Todo>) => {
   const res = await fetch(`${baseUrl}/todos`, {
     method: "POST",
     headers: {
@@ -20,7 +20,30 @@ export const removeTodo = async (id: number) => {
   const res = await fetch(`${baseUrl}/todos/${id}`, {
     method: "DELETE",
   });
-  return res.json();
+  console.log(res);
+  if (res.status == 204) {
+    return true;
+  }
+  if (!res.ok) {
+    return false;
+    // throw new Error("Failed to delete todo");
+  }
+  return true;
+};
+
+export const makeCompleted = async (id: number, isComplete: boolean) => {
+  const res = await fetch(`${baseUrl}/todos/${id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ isComplete }),
+  });
+  console.log("update", res);
+  if (!res.ok) {
+    return false;
+  }
+  return true;
 };
 
 export type Todo = {
